@@ -37,23 +37,27 @@ export default class ScrollFollow extends Component {
     startFollowing: bool,
   };
 
-  static defaultProps = {
-    startFollowing: false,
-  };
-
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      follow: nextProps.startFollowing,
+  constructor(props) {
+    super(props);
+    this.state = {
+      follow: props.startFollowing,
     };
   }
 
-  state = {
-    follow: false,
-  };
-
   handleScroll = ({ scrollTop, scrollHeight, clientHeight }) => {
-    if (this.state.follow && scrollHeight - scrollTop !== clientHeight) {
+    if (
+      this.state.follow &&
+      scrollHeight - scrollTop !== clientHeight &&
+      clientHeight >= 0
+    ) {
       this.setState({ follow: false });
+    } else if (
+      !this.state.follow &&
+      scrollHeight - scrollTop === clientHeight &&
+      clientHeight >= 0 &&
+      this.props.startFollowing
+    ) {
+      this.setState({ follow: true });
     }
   };
 
